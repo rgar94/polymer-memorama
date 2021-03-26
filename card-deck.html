@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="animal-card.html">
+
+<dom-module id="card-deck">
+    <template>
+        <style>
+        </style>
+        <template is="dom-repeat" items="{{cards}}" as="card">
+            <animal-card on-unhide-card="emitCard" card="[[card]]"> </animal-card>
+        </template>
+    </template>
+    <script>
+
+        class CardDeck extends Polymer.Element {
+            static get is() {
+                return 'card-deck';
+            }
+
+            static get properties() {
+                return {
+                    cards: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+
+            emitCard(e) {
+                this.dispatchEvent(new CustomEvent('show-card-value', {
+                    detail: e.detail
+                }));
+            }
+        }
+        window.customElements.define(CardDeck.is, CardDeck);
+    </script>
+</dom-module>

@@ -1,0 +1,82 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="animal-card">
+    <template>
+        <style>
+            button {
+                height: 100px;
+                width: 100px;
+                border: 2px solid #cbbd05;
+                border-radius: 20px;
+                background-color: #5e8c1a;
+                font-size: 40px;
+            }
+
+            button:hover {
+                box-shadow: 0 0 30px #00aeff;
+            }
+
+            #value {
+                font-size: 1em;
+                cursor: not-allowed;
+            }
+
+        </style>
+        <div>
+            <button on-click ="unhide" class="hideClass">
+                <template is="dom-if" if="[[unknown]]">
+                    <div id="unknownCard" class="unkownClass">❔</div>
+                </template>
+                <template is="dom-if" if="[[showCard]]">
+                    <div id="value" class="valueClass">
+                        [[card]]
+                    </div>
+                </template>
+            </button>
+        </div>
+    </template>
+    <script>
+
+        class AnimalCard extends Polymer.Element {
+            static get is() {
+                return 'animal-card';
+            }
+            static get properties() {
+                return {
+                    card: {
+                        type: String,
+                        value: {}
+                    },
+                    index: {
+                        type: Number
+                    },
+                    unknown: {
+                        type:Boolean,
+                        value: true
+                    },
+                    showCard: {
+                        type:Boolean,
+                        value: false
+                    }
+                };
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+
+            unhide() {
+                this.set('showCard', true);
+                this.set('unknown', false);
+                this.dispatchEvent(new CustomEvent('unhide-card', {
+                    detail: {
+                        cardValue: this.get('card'),
+                        index: this.get('index')
+                    }
+                }))
+            }
+        }
+
+        window.customElements.define(AnimalCard.is, AnimalCard);
+    </script>
+</dom-module>

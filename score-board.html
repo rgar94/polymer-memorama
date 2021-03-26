@@ -1,0 +1,110 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="score-board">
+    <template>
+        <style>
+            #scoreP1 {
+                height: 200px;
+                display: inline;
+                font-size: 20px;
+            }
+
+            #scoreP2 {
+                height: 200px;
+                display: inline;
+                font-size: 20px;
+            }
+
+            .player1 {
+                display: inline;
+                padding: 10px;
+                border: 2px solid #cbbd05;
+                border-bottom-left-radius: 10px;
+                border-top-left-radius: 10px;
+            }
+
+            .player2 {
+                display: inline;
+                padding: 10px;
+                margin-left: 200px;
+                border: 2px solid #cbbd05;
+                border-bottom-left-radius: 10px;
+                border-top-left-radius: 10px;
+            }
+
+            .score1 {
+                width: 100px;
+                padding: 10px;
+                display: inline;
+                border: 2px solid #cbbd05;
+                background-color: #6e383e;
+                border-bottom-right-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+
+            .score2 {
+                width: 100px;
+                font-size: 20px;
+                padding: 10px;
+                display: inline;
+                border: 2px solid #cbbd05;
+                background-color: #6e383e;
+                border-bottom-right-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+
+            h2 {
+                display: inline;
+            }
+
+            .turn1 .player1 {
+                background-color: #5e8c1a;
+                box-shadow: 0 0 30px 20px #f3db8f;
+            }
+
+            .turn2 .player2 {
+                background-color: #5e8c1a;
+                box-shadow: 0 0 30px 20px #f3db8f;
+            }
+        </style>
+        <div id='scoreP1' class='turn'>
+            <div class='player1'>
+                <slot name="player1"></slot>
+            </div>
+            <slot name="score1" class='score1'></slot>
+        </div>
+        <div id='scoreP2' class='turn'>
+            <div class='player2'>
+                <slot name="player2"></slot>
+            </div>
+            <slot name="score2" class='score2'></slot>
+        </div>
+        </div>
+    </template>
+    <script>
+
+        class ScoreBoard extends Polymer.Element {
+            static get is() {
+                return 'score-board';
+            }
+            static get properties() {
+                return {
+                    card: {
+                        type: Object,
+                        value: {}
+                    },
+                    turn: {
+                        type: Number,
+                        value: 1
+                    }
+                };
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+        }
+
+        window.customElements.define(ScoreBoard.is, ScoreBoard);
+    </script>
+</dom-module>

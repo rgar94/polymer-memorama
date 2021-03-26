@@ -1,0 +1,163 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="card-deck.html">
+<link rel="import" href="score-board.html">
+
+<dom-module id="memorama-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+        color: white;
+        font-family: sans-serif;
+      }
+      h1 {
+        text-align: center;
+      }
+
+      .board {
+        height: fit-content;
+        min-height: 500px;
+        width: 900px;
+        font-size: 50px;
+        background-image: url('https://i.ebayimg.com/00/s/Njg5WDEwMjQ=/z/RoYAAOSwPK5Zga-X/$_57.JPG?set_id=8800005007');
+        background-size: cover;
+        padding: 30px;
+        border-radius: 20px;
+        margin-top: 20px;
+      }
+
+      #card{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px 160px;
+      }
+
+      .center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+    <header>
+      <h1>Ready to play memorama?</h1>
+    </header>
+    <div class="center">
+      <score-board>
+        <span slot="score1">[[score1]]</span>
+        <span slot="score2">[[score2]]</span>
+        <span slot="player1">[[p1Name]]</span>
+        <span slot="player2">[[p2Name]]</span>
+
+      </score-board>
+      <div class="board" id='board'>
+        <card-deck on-show-card-value="playerChoice" id='card' cards="[[cardList]]"></card-deck>
+      </div>
+    </div>
+  </template>
+
+  <script>
+
+    class MemoramaElement extends Polymer.Element {
+      static get is() {
+        return 'memorama-element';
+      }
+
+      static get properties() {
+        return {
+          cardArray: {
+            type: Array,
+            value: [],
+          },
+          turn: {
+            type: Number,
+          },
+          score: {
+            type: Object,
+          },
+          opened: {
+            type: Array,
+            value:[]
+          },
+          cardList: {
+            type: Array,
+            value: ['🐲', '🐲', '🐔', '🐔', '🐼', '🐼', '🐰', '🐰', '🦝', '🦝', '🐯', '🐯', '🦊', '🦊', '🦁', '🦁', '🐱', '🐱', '🐺', '🐺']
+          },
+          currentIndex: {
+            type: Number,
+          },
+          temporaryValue: {
+            type: String,
+          },
+          randomIndex: {
+            type: Number,
+          },
+          score1: {
+            type: Number,
+            value: 0
+          },
+          score2: {
+            type: Number,
+            value: 0
+          },
+          p1Name: {
+            type: String,
+            value: 'Rick'
+          },
+          p2Name: {
+            type: String,
+            value: 'PC'
+          }
+
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.randomizer()
+
+      }
+
+      randomizer() {
+        this.sortCards();
+        this.cardArray = this.cardList.map((x,i) => ({
+          value: x,
+          index: i
+        }));
+      }
+
+      sortCards() {
+        this.currentIndex = this.cardList.length;
+        while (this.currentIndex !== 0) {
+          this.randomIndex = Math.floor(Math.random() * this.currentIndex);
+          this.currentIndex -= 1;
+          this.temporaryValue = this.cardList[this.currentIndex];
+          this.cardList[this.currentIndex] = this.cardList[this.randomIndex];
+          this.cardList[this.randomIndex] = this.temporaryValue;
+        }
+        return this.cardList;
+      }
+
+      playerChoice(val) {
+        if (this.opened.length === 0) {
+          this.opened.push({
+            symbol: val.cardValue,
+            index: val.index
+          });
+        } else if (this.opened.length === 1 && this.opened[0].index !== val.index) {
+          this.opened.push({
+            symbol: val.cardValue,
+            index: val.index
+          });
+          if (this.opened.length === 2) {
+            this.validPlay();
+          }
+        }
+      }
+
+      validPlay() {
+        console.log(this.opened)
+      }
+    }
+    window.customElements.define(MemoramaElement.is, MemoramaElement);
+  </script>
+</dom-module>
