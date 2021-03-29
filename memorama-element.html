@@ -39,7 +39,7 @@
       }
     </style>
     <header>
-      <h1>Ready to play memorama?</h1>
+      <h1>[[message]]</h1>
     </header>
     <div class="center">
       <score-board>
@@ -50,7 +50,7 @@
 
       </score-board>
       <div class="board" id='board'>
-        <card-deck on-show-card-value="playerChoice" id='card' cards="[[cardList]]"></card-deck>
+        <card-deck on-show-card-value="playerChoice" id='card' cards="[[cardList]]" ></card-deck>
       </div>
     </div>
   </template>
@@ -70,6 +70,7 @@
           },
           turn: {
             type: Number,
+            value: 1
           },
           score: {
             type: Object,
@@ -99,6 +100,10 @@
             type: Number,
             value: 0
           },
+          totalTurns: {
+            type: Number,
+            value: 0
+          },
           p1Name: {
             type: String,
             value: 'Rick'
@@ -106,6 +111,10 @@
           p2Name: {
             type: String,
             value: 'PC'
+          },
+          message: {
+            type: String,
+            value: 'Ready to play?'
           }
 
         };
@@ -114,14 +123,12 @@
       connectedCallback() {
         super.connectedCallback();
         this.randomizer()
-
       }
 
       randomizer() {
         this.sortCards();
-        this.cardArray = this.cardList.map((x,i) => ({
-          value: x,
-          index: i
+        this.cardArray = this.cardList.map((card,index) => ({
+          value: card
         }));
       }
 
@@ -140,13 +147,13 @@
       playerChoice(val) {
         if (this.opened.length === 0) {
           this.opened.push({
-            symbol: val.cardValue,
-            index: val.index
+            symbol: val.detail.cardValue,
+            index: val.detail.index,
           });
         } else if (this.opened.length === 1 && this.opened[0].index !== val.index) {
           this.opened.push({
-            symbol: val.cardValue,
-            index: val.index
+            symbol: val.detail.cardValue,
+            index: val.detail.index,
           });
           if (this.opened.length === 2) {
             this.validPlay();
@@ -155,7 +162,40 @@
       }
 
       validPlay() {
-        console.log(this.opened)
+        console.log(this.opened);
+        if (this.opened[0].symbol === this.opened[1].symbol) {
+          this.turn = this.turn === 1 ? this.score1++ : this.score2++;
+          console.log("correcto")
+          this.isPair();
+          if (this.totalTurns === 10) {
+            if (this.score1 > this.score2) {
+              this.message = 'Player 1 wins';
+              console.log('P1GANA');
+              this.winner = 'P1 Wins';
+            } else if (this.score1 < this.score2) {
+              this.message = 'Player 2 wins';
+              console.log('P2GANA');
+              this.winner = 'P2 wins';
+            } else {
+              this.message = 'Draw';
+              console.log('EMPATE');
+              this.winner = 'Draw';
+            }
+          }
+        } else {
+          this.isNotPair();
+          console.log(this.turn);
+          this.turn = this.turn === 1 ? 2 : 1;
+        }
+      }
+
+      isPair() {
+        this.opened = [];
+        this.totalTurns++;
+      }
+
+      isNotPair() {
+        this.opened = [];
       }
     }
     window.customElements.define(MemoramaElement.is, MemoramaElement);

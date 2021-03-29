@@ -6,7 +6,7 @@
         <style>
         </style>
         <template is="dom-repeat" items="{{cards}}" as="card">
-            <animal-card on-unhide-card="emitCard" card="[[card]]"> </animal-card>
+            <animal-card on-unhide-card="emitCard" card="[[card]]" index="[[index]]"> </animal-card>
         </template>
     </template>
     <script>
